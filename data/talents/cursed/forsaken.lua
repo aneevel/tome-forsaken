@@ -1,0 +1,31 @@
+newTalentType({
+	allow_random = true,
+	type = "cursed/isolation",
+	generic = false,
+	name = _t("isolation", "talent type"),
+	description = _t("They will feel your loneliness."),
+})
+
+forsaken_wil_req1 = {
+	stat = {
+		wil = function(level)
+			return 12 + (level - 1) * 2
+		end,
+	},
+	level = function(level)
+		return 0 + (level - 1)
+	end,
+}
+
+forsaken_wil_req2 = {
+	stat = {
+		wil = function(level)
+			return 20 + (level - 1) * 2
+		end,
+	},
+	level = function(level)
+		return 4 + (level - 1)
+	end,
+}
+
+load("/data-forsaken/talents/cursed/isolation.lua")
