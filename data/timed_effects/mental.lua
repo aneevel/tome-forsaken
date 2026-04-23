@@ -1,3 +1,5 @@
+local Map = require("engine.Map")
+
 newEffect({
 	name = "ISOLATED",
 	image = "talents/flame.png",
@@ -33,10 +35,34 @@ newEffect({
 		end
 
 		if eff.src:knowTalent(eff.src.T_SECLUSION) then
-			game.log(
-				"%s does know Seclusion, at level %d",
-				eff.src:getName(),
-				eff.src:getTalentLevel(eff.src.T_SECLUSION)
+			local t_seclusion = eff.src:getTalentFromId(eff.src.T_SECLUSION)
+			local seclusion_radius = eff.src:getTalentRadius(t_seclusion)
+			local seclusion_duration = t_seclusion.duration(eff.src, t_seclusion)
+			local mindpower = eff.src:combatMindpower()
+
+			self:project(
+				{ type = "ball", range = 0, friendlyfire = true, radius = seclusion_radius },
+				self.x,
+				self.y,
+				function(px, py)
+					local target = game.level.map(px, py, Map.ACTOR)
+					if not target then
+						return
+					end
+					if target and target ~= self and target.faction == self.faction then
+						if target:checkHit(mindpower, target:combatMentalResist()) then
+							game.log(
+								"%s is forced to feel the effects of %s's Seclusion for %d turns!",
+								target.name,
+								self.name,
+								seclusion_duration
+							)
+							if target:canBe("stun") then
+								target:setEffect(target.EFF_STUNNED, seclusion_duration, {})
+							end
+						end
+					end
+				end
 			)
 		end
 		DamageType:get(DamageType.MIND).projector(eff.src, self.x, self.y, DamageType.MIND, eff)

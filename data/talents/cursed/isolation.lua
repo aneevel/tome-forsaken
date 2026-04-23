@@ -110,18 +110,18 @@ newTalent({
 	points = 5,
 	require = forsaken_wil_req2,
 	requires_target = false,
-	effectRadius = function(self, t)
+	radius = function(self, t)
 		return math.ceil(self:combatTalentScale(t, 1, 6, 0.75))
 	end,
 	-- probably rethink this
-	getDuration = function(self, t)
+	duration = function(self, t)
 		return math.floor(self:combatTalentScale(t, 1, 4))
 	end,
 	info = function(self, t)
-		local radius = t.effectRadius(self, t)
-		local duration = t.getDuration(self, t)
+		local radius = t.radius(self, t)
+		local duration = t.duration(self, t)
 		return ([[Allies of isolated enemies are kept at bay by your mental powers. In a radius of %d 
-    around any isolated or apathetic foe, enemies must make a mental save each turn or become Paralyzed for %d turns.]]):tformat(
+    around any isolated or apathetic foe, enemies must make a mental save each turn or become Stunned for %d turns.]]):tformat(
 			radius,
 			duration
 		)
