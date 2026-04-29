@@ -29,6 +29,7 @@ newBirthDescriptor({
 		[ActorTalents.T_GLOOM] = 1,
 		[ActorTalents.T_ISOLATE] = 1,
 		[ActorTalents.T_SECLUSION] = 5,
+		[ActorTalents.T_FORCED_APATHY] = 1,
 	},
 	copy = {
 		max_life = 110,

@@ -28,4 +28,15 @@ forsaken_wil_req2 = {
 	end,
 }
 
+forsaken_wil_req3 = {
+	stat = {
+		wil = function(level)
+			return 28 + (level - 1) * 2
+		end,
+	},
+	level = function(level)
+		return 8 + (level - 1)
+	end,
+}
+
 load("/data-forsaken/talents/cursed/isolation.lua")

@@ -20,6 +20,26 @@
 local DamageType = require("engine.DamageType")
 local Actor = require("engine.Actor")
 
+function getHateMultiplier(self, min, max, cursedWeaponBonus, hate)
+	local fraction = (hate or self.hate) / 100
+	if cursedWeaponBonus then
+		if self:hasDualWeapon() then
+			if self:hasCursedWeapon() then
+				fraction = fraction + 0.13
+			end
+			if self:hasCursedOffhandWeapon() then
+				fraction = fraction + 0.07
+			end
+		else
+			if self:hasCursedWeapon() then
+				fraction = fraction + 0.2
+			end
+		end
+	end
+	fraction = math.min(fraction, 1)
+	return (min + ((max - min) * fraction))
+end
+
 newTalent({
 	name = "Isolate",
 	short_name = "ISOLATE",
@@ -125,5 +145,43 @@ newTalent({
 			radius,
 			duration
 		)
+	end,
+})
+
+newTalent({
+	name = "Forced Apathy",
+	short_name = "FORCED_APATHY",
+	mode = "activated",
+	type = { "cursed/isolation", 3 },
+	points = 5,
+	require = forsaken_wil_req3,
+	requires_target = true,
+	cooldown = 6,
+	hate = 10,
+	duration = function(self, t)
+		return math.floor(self:combatTalentScale(t, 1, 5)) + self:combatMindpower()
+	end,
+	saveReduction = function(self, t)
+		return self:combatScale(self:getTalentLevel(t) + self:combatMindpower(), 8, 5, 30, 30, 0.8, 0, 0)
+	end,
+	movementSpeedReduction = function(self, t)
+		return self:combatScale(self:getTalentLevel(t) + self:combatMindpower(), 3, 3, 22, 22, 0.6, 0, 0)
+	end,
+	critSusceptibility = function(self, t)
+		return self:combatScale(self:getTalentLevel(t) + self:combatMindpower(), 2, 2, 10, 10, 0.4, 0, 0)
+	end,
+	damage = function(self, t)
+		return self:combatTalentIntervalDamage(t, "wil", 0.25, 0.8, 0.4) * getHateMultiplier(self, 0.5, 1, false, hate)
+	end,
+	info = function(self, t)
+		local duration = t.duration(self, t)
+		local saveReduction = t.duration(self, t)
+		local movementSpeedReduction = t.duration(self, t)
+		local critSusceptibility = t.critSusceptibility(self, t)
+		local damage = t.damage(self, t)
+		return ([[Remove the effects of Isolation, instead making them Apathetic to their condition 
+    for %d turns. Apathy reduces their mental save even further (%d), reduces movement speed by %d and makes them %d 
+    more susceptible to critical attacks. The sudden emotional change of state is painful for the recipient, causing %d 
+    damage on gain.]]):tformat(duration, saveReduction, movementSpeedReduction, critSusceptibility, damage)
 	end,
 })
