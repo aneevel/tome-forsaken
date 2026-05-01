@@ -206,6 +206,7 @@ newTalent({
 			return nil
 		end
 
+		target:removeEffect(target.EFF_ISOLATED)
 		target:setEffect(target.EFF_FORCED_APATHY, t.duration(self, t), { src = self })
 		return true
 	end,
