@@ -71,3 +71,26 @@ newEffect({
 	end,
 	activate = function(self, eff) end,
 })
+
+newEffect({
+	name = "FORCED_APATHY",
+	image = "talents/flame.png",
+	desc = _t("Apathetic"),
+	long_desc = function(self, eff)
+		return _t("The target is apathetic, reducing their will to act or resist.")
+	end,
+	type = "mental",
+	subtype = {},
+	status = "deterimental",
+	cancel_on_level_change = true,
+	parameters = {},
+	on_gain = function(self, err)
+		return _t("#Target# has become apathetic to the world."), _t("+Apathetic")
+	end,
+	on_lose = function(self, err)
+		return _t("#Target has regained their connection to the world."), _t("-Apathetic")
+	end,
+	on_timeout = function(self, eff)
+		game.log("Oh no they dont care about anything and are so cool and edgy")
+	end,
+})

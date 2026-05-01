@@ -50,7 +50,7 @@ newTalent({
 	cooldown = 6,
 	hate = 5,
 	requires_target = true,
-	range = 3,
+	range = 5,
 	target = function(self, t)
 		return { type = "hit", range = self:getTalentRange(t), talent = t }
 	end,
@@ -155,9 +155,13 @@ newTalent({
 	type = { "cursed/isolation", 3 },
 	points = 5,
 	require = forsaken_wil_req3,
+	range = 5,
 	requires_target = true,
 	cooldown = 6,
 	hate = 10,
+	target = function(self, t)
+		return { type = "hit", range = self:getTalentRange(t), talent = t }
+	end,
 	duration = function(self, t)
 		return math.floor(self:combatTalentScale(t, 1, 5)) + self:combatMindpower()
 	end,
@@ -183,5 +187,26 @@ newTalent({
     for %d turns. Apathy reduces their mental save even further (%d), reduces movement speed by %d and makes them %d 
     more susceptible to critical attacks. The sudden emotional change of state is painful for the recipient, causing %d 
     damage on gain.]]):tformat(duration, saveReduction, movementSpeedReduction, critSusceptibility, damage)
+	end,
+	action = function(self, t)
+		local tg = self:getTalentTarget(t)
+		local x, y = self:getTarget(tg)
+
+		if not x or not y then
+			return nil
+		end
+
+		local target = game.level.map(x, y, Map.ACTOR)
+		if not target then
+			return nil
+		end
+
+		if not target:hasEffect(target.EFF_ISOLATED) then
+			game.logPlayer(self, "You must target an isolated target to use this talent.")
+			return nil
+		end
+
+		target:setEffect(target.EFF_FORCED_APATHY, t.duration(self, t), { src = self })
+		return true
 	end,
 })
