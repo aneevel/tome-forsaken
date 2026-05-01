@@ -93,12 +93,7 @@ newEffect({
 		return _t("#Target has regained their connection to the world."), _t("-Apathetic")
 	end,
 	on_timeout = function(self, eff)
-		game.log(
-
-			"Target should reduce saves by %d, movement speed by %d, and crit susceptibility by %d%%",
-			eff.saveReduction,
-			eff.movementSpeedReduction,
-			eff.critSusceptibility
-		)
+		self:addTemporaryValue("combat_mentalresist", -eff.saveReduction)
+		self:addTemporaryValue("movement_speed", (1.0 - (1.0 + eff.movementSpeedReduction)))
 	end,
 })
