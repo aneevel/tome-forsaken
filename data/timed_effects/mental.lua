@@ -77,7 +77,9 @@ newEffect({
 	image = "talents/flame.png",
 	desc = _t("Apathetic"),
 	long_desc = function(self, eff)
-		return _t("The target is apathetic, reducing their will to act or resist.")
+		return _t(
+			"The target is apathetic, reducing their will to act or resist. Their mental save is reduced by %d, movement speed by %d, they are %d% more susceptible to critical hits."
+		):tformat(eff.saveReduction, eff.movementSpeedReduction, eff.critSusceptibility)
 	end,
 	type = "mental",
 	subtype = {},
@@ -91,6 +93,12 @@ newEffect({
 		return _t("#Target has regained their connection to the world."), _t("-Apathetic")
 	end,
 	on_timeout = function(self, eff)
-		game.log("Oh no they dont care about anything and are so cool and edgy")
+		game.log(
+
+			"Target should reduce saves by %d, movement speed by %d, and crit susceptibility by %d%%",
+			eff.saveReduction,
+			eff.movementSpeedReduction,
+			eff.critSusceptibility
+		)
 	end,
 })

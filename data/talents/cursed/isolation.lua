@@ -175,12 +175,12 @@ newTalent({
 		return self:combatScale(self:getTalentLevel(t) + self:combatMindpower(), 2, 2, 10, 10, 0.4, 0, 0)
 	end,
 	damage = function(self, t)
-		return self:combatTalentIntervalDamage(t, "wil", 0.25, 0.8, 0.4) * getHateMultiplier(self, 0.5, 1, false, hate)
+		return self:combatTalentMindDamage(t, 35, 250) * getHateMultiplier(self, 0.5, 1, false, hate)
 	end,
 	info = function(self, t)
 		local duration = t.duration(self, t)
-		local saveReduction = t.duration(self, t)
-		local movementSpeedReduction = t.duration(self, t)
+		local saveReduction = t.saveReduction(self, t)
+		local movementSpeedReduction = t.movementSpeedReduction(self, t)
 		local critSusceptibility = t.critSusceptibility(self, t)
 		local damage = t.damage(self, t)
 		return ([[Remove the effects of Isolation, instead making them Apathetic to their condition 
@@ -206,8 +206,22 @@ newTalent({
 			return nil
 		end
 
+		local damage = self:mindCrit(t.damage(self, t))
+		local duration = t.duration(self, t)
+		local saveReduction = t.saveReduction(self, t)
+		local movementSpeedReduction = t.movementSpeedReduction(self, t)
+		local critSusceptibility = t.critSusceptibility(self, t)
+
 		target:removeEffect(target.EFF_ISOLATED)
-		target:setEffect(target.EFF_FORCED_APATHY, t.duration(self, t), { src = self })
+		target:setEffect(target.EFF_FORCED_APATHY, duration, {
+			src = self,
+			duration = duration,
+			saveReduction = saveReduction,
+			movementSpeedReduction = movementSpeedReduction,
+			critSusceptibility = critSusceptibility,
+		})
+
+		DamageType:get(DamageType.MIND).projector(target, x, y, DamageType.MIND, damage)
 		return true
 	end,
 })
