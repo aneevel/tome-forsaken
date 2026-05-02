@@ -78,7 +78,7 @@ newEffect({
 	desc = _t("Apathetic"),
 	long_desc = function(self, eff)
 		return _t(
-			"The target is apathetic, reducing their will to act or resist. Their mental save is reduced by %d, movement speed by %d, they are %d% more susceptible to critical hits."
+			"The target is apathetic, reducing their will to act or resist. Their mental save is reduced by %d and movement speed by %d%%."
 		):tformat(eff.saveReduction, eff.movementSpeedReduction, eff.critSusceptibility)
 	end,
 	type = "mental",
@@ -95,5 +95,9 @@ newEffect({
 	on_timeout = function(self, eff)
 		self:addTemporaryValue("combat_mentalresist", -eff.saveReduction)
 		self:addTemporaryValue("movement_speed", (1.0 - (1.0 + eff.movementSpeedReduction)))
+
+		if eff.src:knowTalent(eff.src.T_GROWING_APATHY) then
+			game.log("By the force of %s's growing apathy, the misery spreads.", self.name)
+		end
 	end,
 })

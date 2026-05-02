@@ -171,9 +171,6 @@ newTalent({
 	movementSpeedReduction = function(self, t)
 		return self:combatScale(self:getTalentLevel(t) + self:combatMindpower(), 3, 3, 22, 22, 0.6, 0, 0)
 	end,
-	critSusceptibility = function(self, t)
-		return self:combatScale(self:getTalentLevel(t) + self:combatMindpower(), 2, 2, 10, 10, 0.4, 0, 0)
-	end,
 	damage = function(self, t)
 		return self:combatTalentMindDamage(t, 35, 250) * getHateMultiplier(self, 0.5, 1, false, hate)
 	end,
@@ -181,12 +178,11 @@ newTalent({
 		local duration = t.duration(self, t)
 		local saveReduction = t.saveReduction(self, t)
 		local movementSpeedReduction = t.movementSpeedReduction(self, t)
-		local critSusceptibility = t.critSusceptibility(self, t)
 		local damage = t.damage(self, t)
 		return ([[Remove the effects of Isolation, instead making them Apathetic to their condition 
-    for %d turns. Apathy reduces their mental save even further (%d), reduces movement speed by %d and makes them %d 
-    more susceptible to critical attacks. The sudden emotional change of state is painful for the recipient, causing %d 
-    damage on gain.]]):tformat(duration, saveReduction, movementSpeedReduction, critSusceptibility, damage)
+    for %d turns. Apathy reduces their mental save even further (%d) and reduces movement speed by %d%%.
+    The sudden emotional change of state is painful for the recipient, causing %d 
+    damage on gain.]]):tformat(duration, saveReduction, movementSpeedReduction, damage)
 	end,
 	action = function(self, t)
 		local tg = self:getTalentTarget(t)
@@ -210,7 +206,6 @@ newTalent({
 		local duration = t.duration(self, t)
 		local saveReduction = t.saveReduction(self, t)
 		local movementSpeedReduction = t.movementSpeedReduction(self, t)
-		local critSusceptibility = t.critSusceptibility(self, t)
 
 		target:removeEffect(target.EFF_ISOLATED)
 		target:setEffect(target.EFF_FORCED_APATHY, duration, {
@@ -218,10 +213,55 @@ newTalent({
 			duration = duration,
 			saveReduction = saveReduction,
 			movementSpeedReduction = movementSpeedReduction,
-			critSusceptibility = critSusceptibility,
 		})
 
 		DamageType:get(DamageType.MIND).projector(target, x, y, DamageType.MIND, damage)
 		return true
+	end,
+})
+
+newTalent({
+	name = "Growing Apathy",
+	short_name = "GROWING_APATHY",
+	mode = "passive",
+	type = { "cursed/isolation", 1 },
+	points = 5,
+	require = forsaken_wil_req4,
+	requires_target = false,
+	spreadChance = function(self, t)
+		return math.ceil(self:combatTalentScale(t, 15, 50))
+	end,
+	radius = function(self, t)
+		return math.ceil(self:combatTalentScale(t, 1, 6, 0.75))
+	end,
+	duration = function(self, t)
+		return math.floor(self:combatTalentScale(t, 3, 7))
+	end,
+	enemies = function(self, t)
+		return math.ceil(self:combatTalentScale(t, 5, 2))
+	end,
+	mentalSpeed = function(self, t)
+		return math.floor(self:combatTalentScale(t, 15, 35))
+	end,
+	mindpower = function(self, t)
+		return math.floor(self:combatTalentScale(t, 5, 20))
+	end,
+	info = function(self, t)
+		local radius = t.radius(self, t)
+		local duration = t.duration(self, t)
+		local spreadChance = t.spreadChance(self, t)
+		local enemies = t.enemies(self, t)
+		local mentalSpeed = t.mentalSpeed(self, t)
+		local mindpower = t.mindpower(self, t)
+		return ([[Each turn an enemy is afflicted with Apathy, there is a %d%% chance they spread their apathy 
+    to all enemies within a %d radius. If %d enemies are affected by Apathy in one turn, you will receive the
+    "Bitter" effect for %d turns, increasing your mental speed by %d%% and mindpower by %d.]]):tformat(
+			spreadChance,
+			radius,
+			enemies,
+			duration,
+			mentalSpeed,
+			mindpower
+		)
 	end,
 })
