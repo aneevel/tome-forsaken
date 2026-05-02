@@ -97,6 +97,25 @@ newEffect({
 		self:addTemporaryValue("movement_speed", (1.0 - (1.0 + eff.movementSpeedReduction)))
 
 		if eff.src:knowTalent(eff.src.T_GROWING_APATHY) then
+			local t_growing_apathy = eff.src:getTalentFromId(eff.src.T_GROWING_APATHY)
+			local apathy_radius = eff.src:getTalentRadius(t_growing_apathy)
+			local spread_chance = t_growing_apathy.spreadChance(eff.src, t_growing_apathy)
+			local enemies_threshold = t_growing_apathy.enemies(eff.src, t_growing_apathy)
+
+			self:project(
+				{ type = "ball", range = 0, friendlyfire = true, radius = apathy_radius },
+				self.x,
+				self.y,
+				function(px, py)
+					local target = game.level.map(px, py, Map.ACTOR)
+					if not target then
+						return
+					end
+					if target and target ~= self and target.faction == self.faction then
+						game.log("%s becomes apathetic due to proximity to %s", target.name, self.name)
+					end
+				end
+			)
 			game.log("By the force of %s's growing apathy, the misery spreads.", self.name)
 		end
 	end,

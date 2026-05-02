@@ -172,7 +172,7 @@ newTalent({
 		return self:combatScale(self:getTalentLevel(t) + self:combatMindpower(), 3, 3, 22, 22, 0.6, 0, 0)
 	end,
 	damage = function(self, t)
-		return self:combatTalentMindDamage(t, 35, 250) * getHateMultiplier(self, 0.5, 1, false, hate)
+		return self:combatTalentMindDamage(t, 5, 25) * getHateMultiplier(self, 0.5, 1, false, hate)
 	end,
 	info = function(self, t)
 		local duration = t.duration(self, t)
