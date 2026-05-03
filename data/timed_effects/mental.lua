@@ -111,12 +111,39 @@ newEffect({
 					if not target then
 						return
 					end
-					if target and target ~= self and target.faction == self.faction then
+					if
+						target
+						and target ~= self
+						and target.faction == self.faction
+						and not target:hasEffect(target.EFF_FORCED_APATHY)
+					then
+						local t_forced_apathy = eff.src:getTalentFromId(eff.src.T_FORCED_APATHY)
+						local duration = t_forced_apathy.duration(eff.src, t_forced_apathy)
+						local damage = eff.src:mindCrit(t_forced_apathy.damage(self, t))
+						local saveReduction = t_forced_apathy.saveReduction(self, t)
+						local movementSpeedReduction = t_forced_apathy.movementSpeedReduction(self, t)
+
+						target:removeEffect(target.EFF_ISOLATED)
+						target:setEffect(target.EFF_FORCED_APATHY, duration, {
+							src = self,
+							duration = 5,
+							saveReduction = saveReduction,
+							movementSpeedReduction = movementSpeedReduction,
+						})
+
+						DamageType:get(DamageType.MIND).projector(target, px, py, DamageType.MIND, damage)
+						game.level.map:particleEmitter(
+							target.x,
+							target.y,
+							1,
+							"reproach",
+							{ dx = self.x - target.x, dy = self.y - target.y }
+						)
 						game.log("%s becomes apathetic due to proximity to %s", target.name, self.name)
+						game:playSoundNear(self, "talents/fire")
 					end
 				end
 			)
-			game.log("By the force of %s's growing apathy, the misery spreads.", self.name)
 		end
 	end,
 })
