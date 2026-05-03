@@ -237,9 +237,6 @@ newTalent({
 	duration = function(self, t)
 		return math.floor(self:combatTalentScale(t, 3, 7))
 	end,
-	enemies = function(self, t)
-		return math.ceil(self:combatTalentScale(t, 5, 2))
-	end,
 	mentalSpeed = function(self, t)
 		return math.floor(self:combatTalentScale(t, 15, 35))
 	end,
@@ -250,15 +247,13 @@ newTalent({
 		local radius = t.radius(self, t)
 		local duration = t.duration(self, t)
 		local spreadChance = t.spreadChance(self, t)
-		local enemies = t.enemies(self, t)
 		local mentalSpeed = t.mentalSpeed(self, t)
 		local mindpower = t.mindpower(self, t)
 		return ([[Each turn an enemy is afflicted with Apathy, there is a %d%% chance they spread their apathy 
-    to all enemies within a %d radius. If %d enemies are affected by Apathy in one turn, you will receive the
+    to all enemies within a %d radius. When enemies gain Apathy in this way, you will receive the
     "Bitter" effect for %d turns, increasing your mental speed by %d%% and mindpower by %d.]]):tformat(
 			spreadChance,
 			radius,
-			enemies,
 			duration,
 			mentalSpeed,
 			mindpower

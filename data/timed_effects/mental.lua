@@ -67,7 +67,6 @@ newEffect({
 		end
 		DamageType:get(DamageType.MIND).projector(eff.src, self.x, self.y, DamageType.MIND, eff)
 		self:addTemporaryValue("combat_mentalresist", -eff.saveRed)
-		game.log("%s continues to feel the loneliness of isolation!", self:getName())
 	end,
 	activate = function(self, eff) end,
 })
@@ -100,7 +99,8 @@ newEffect({
 			local t_growing_apathy = eff.src:getTalentFromId(eff.src.T_GROWING_APATHY)
 			local apathy_radius = eff.src:getTalentRadius(t_growing_apathy)
 			local spread_chance = t_growing_apathy.spreadChance(eff.src, t_growing_apathy)
-			local enemies_threshold = t_growing_apathy.enemies(eff.src, t_growing_apathy)
+			local mind_speed = t_growing_apathy.mentalSpeed(eff.src, t_growing_apathy)
+			local mindpower = t_growing_apathy.mindpower(eff.src, t_growing_apathy)
 
 			self:project(
 				{ type = "ball", range = 0, friendlyfire = true, radius = apathy_radius },
@@ -116,6 +116,7 @@ newEffect({
 						and target ~= self
 						and target.faction == self.faction
 						and not target:hasEffect(target.EFF_FORCED_APATHY)
+						and rng.percent(spread_chance)
 					then
 						local t_forced_apathy = eff.src:getTalentFromId(eff.src.T_FORCED_APATHY)
 						local duration = t_forced_apathy.duration(eff.src, t_forced_apathy)
@@ -125,10 +126,15 @@ newEffect({
 
 						target:removeEffect(target.EFF_ISOLATED)
 						target:setEffect(target.EFF_FORCED_APATHY, duration, {
-							src = self,
+							src = eff.src,
 							duration = 5,
 							saveReduction = saveReduction,
 							movementSpeedReduction = movementSpeedReduction,
+						})
+
+						eff.src:setEffect(target.EFF_BITTER, duration, {
+							mentalSpeed = mind_speed,
+							mindpower = mindpower
 						})
 
 						DamageType:get(DamageType.MIND).projector(target, px, py, DamageType.MIND, damage)
@@ -146,4 +152,30 @@ newEffect({
 			)
 		end
 	end,
+})
+
+newEffect({
+	name = "BITTER",
+	image = "talents/flame.png",
+	desc = _t("Bitter"),
+	long_desc = function(self, eff)
+		return _t(
+			"The target has become empowered by their bitterness, increasing their mental speed by %d%% and mindpower by %d"
+		):tformat(eff.mentalSpeed, eff.mindpower)
+	end,
+	type = "mental",
+	subtype = {},
+	status = "beneficial",
+	cancel_on_level_change = true,
+	parameters = {},
+	on_gain = function(self, err)
+		return _t("#Target# is being fueled by their bitterness."), _t("+Bitter")
+	end,
+	on_lose = function(self, err)
+		return _t("#Target# has forgotten their bitterness...for now."), _t("-Bitter")
+	end,
+	activate = function(self, eff)
+		self:addTemporaryValue("combat_mindspeed", eff.mentalSpeed)
+		self:addTemporaryValue("combat_mindpower", eff.mindpower)
+	end
 })
