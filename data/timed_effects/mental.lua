@@ -179,3 +179,26 @@ newEffect({
 		self:addTemporaryValue("combat_mindpower", eff.mindpower)
 	end
 })
+
+newEffect({
+	name = "RECLUSE_SOLITUDE",
+	image = "talents/flame.png",
+	desc = _t("Solitude"),
+	type = "mental",
+	subtype = {},
+	status = "beneficial",
+	display_desc = function(self, eff)
+		return ([[Solitude %d%%]]):tformat(eff.power)
+	end,
+	long_desc = function(self, eff)
+		local t = self:getTalentFromId(self.T_RECLUSE)
+		return ([[
+				"Gaining strength in the power of their isolation at strength %d, gaining %d%% All Resist, %d Life Regen, and %d%% Movement Speed"]]):tformat(
+				eff.power,
+				self.resists.all,
+				self.life_regen,
+				self.movement_speed
+		)
+	end,
+
+})

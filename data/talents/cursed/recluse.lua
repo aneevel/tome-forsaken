@@ -26,8 +26,8 @@ newTalent({
     points = 5,
     require = forsaken_wil_req1,
     cooldown = 0,
-    hate = 0,
-    requires_target = false,
+    no_energy = true,
+    tactical = { BUFF = 5},
     radius = function(self, t)
         return math.ceil(self:combatTalentScale(t, 8, 3))
     end,
@@ -45,27 +45,64 @@ newTalent({
         local life_regen = t.getLifeRegen(self, t)
         local movement_speed = t.getMovementSpeed(self, t)
         local radius = t.radius(self, t)
-        return ([[Years of loneliness have taught you that there is safety in being alone. None
-        can touch you in the safety of isolation, and you begin to grow more resilient the further you are
-        from others. At full power, your Recluse status gives you %d%% all damage resist, %d health regeneration,
-        and %d%% movement speed. You project a %d radius around you; enemies with the radius decay these bonuses,
-        growing stronger the closer they are, potentially hindering you instead.]]):tformat(
+        return ([[Years of loneliness have taught you that there is safety in being alone. None can touch you in the safety of isolation, and you begin to grow more resilient the further you are from others. At full power, your Recluse status gives you %d%% all damage resist, %d health regeneration, and %d%% movement speed. You project a %d radius around you; enemies within the radius decay these bonuses, growing stronger the closer they are, potentially hindering you instead.]]):tformat(
                 all_damage_resist,
                 life_regen,
                 movement_speed,
                 radius
         )
     end,
-    action = function(self, t)
+    activate = function(self, t)
         return {
             all_resist = self:addTemporaryValue("resists", {all=t.getAllResist(self, t)}),
-            health_regen = self:addTemporaryValue("life_regen", t.getLifeRegen(self, t)),
-            movement_speed = self:addTemporaryValue("move", t.getMovementSpeed(self, t))
+            life_regen = self:addTemporaryValue("life_regen", t.getLifeRegen(self, t)),
+            movement_speed = self:addTemporaryValue("movement_speed", t.getMovementSpeed(self, t)),
+            scalar = 1
         }
+    end,
+    deactivate = function(self, t, p)
+        if p.all_resist then self:removeTemporaryValue("resists", p.all_resist) end
+        if p.life_regen then self:removeTemporaryValue("life_regen", p.life_regen) end
+        if p.movement_speed then self:removeTemporaryValue("movement_speed", p.movement_speed) end
+
+        self:removeEffect(self.EFF_RECLUSE_SOLITUDE)
+        return {}
     end,
     callbackOnActBase = function(self, t)
         game.log("Callback for Recluse")
+
+        -- remove old values before anything else
         local p = self:isTalentActive(t.id)
-        game.log(p)
+        if p.all_resist then self:removeTemporaryValue("resists", p.all_resist) end
+        if p.life_regen then self:removeTemporaryValue("life_regen", p.life_regen) end
+        if p.movement_speed then self:removeTemporaryValue("movement_speed", p.movement_speed) end
+
+        -- set radius and weight from talent level
+        local radius = t.radius(self, t)
+        local weight = 80 / self:getTalentLevel(t)
+
+        -- initialize score
+        local power = 100
+
+        for i, a in ipairs(self.fov.actors_dist) do
+            if a == self then goto continue end
+            local distance = core.fov.distance(self.x, self.y, a.x, a.y)
+            if distance > radius then goto continue end
+
+            power = power - (weight / distance)
+            ::continue::
+        end
+
+        -- provide scalar based off power
+        local scalar = power / 100
+
+        -- actually set the effects here
+        p.all_resist = self:addTemporaryValue("resists", {all=t.getAllResist(self, t) * scalar})
+        p.life_regen = self:addTemporaryValue("life_regen", t.getLifeRegen(self, t) * scalar)
+        p.movement_speed = self:addTemporaryValue("movement_speed", t.getMovementSpeed(self, t) * scalar / 100)
+        p.scalar = scalar
+
+        -- get effect for visual display
+        self:setEffect(self.EFF_RECLUSE_SOLITUDE, 1, { power = power })
     end
 })
