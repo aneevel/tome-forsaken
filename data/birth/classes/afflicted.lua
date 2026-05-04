@@ -22,6 +22,8 @@ newBirthDescriptor({
 		["cursed/gloom"] = { true, 0.1 },
 		["cursed/cursed-form"] = { true, 0.3 },
 		["cursed/isolation"] = { true, 0.3 },
+		["cursed/darkness"] = { true, 0.3 },
+		["cursed/recluse"] = { true, 0.3},
 		["technique/combat-training"] = { true, 0.1 },
 	},
 	talents = {
@@ -31,6 +33,7 @@ newBirthDescriptor({
 		[ActorTalents.T_SECLUSION] = 5,
 		[ActorTalents.T_FORCED_APATHY] = 1,
 		[ActorTalents.T_GROWING_APATHY] = 1,
+		[ActorTalents.T_RECLUSE] = 1,
 	},
 	copy = {
 		max_life = 110,

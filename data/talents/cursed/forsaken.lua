@@ -6,6 +6,14 @@ newTalentType({
 	description = _t("They will feel your loneliness."),
 })
 
+newTalentType({
+	allow_random = true,
+	type = "cursed/recluse",
+	generic = true,
+	name = _t("recluse", "talent type"),
+	description = _t("I exist in complete seclusion."),
+})
+
 forsaken_wil_req1 = {
 	stat = {
 		wil = function(level)
@@ -51,3 +59,4 @@ forsaken_wil_req4 = {
 }
 
 load("/data-forsaken/talents/cursed/isolation.lua")
+load("/data-forsaken/talents/cursed/recluse.lua")
