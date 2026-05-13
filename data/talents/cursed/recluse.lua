@@ -179,6 +179,26 @@ newTalent({
             p.blight_conversion = self:addTemporaryValue("resists", { [DamageType.BLIGHT] = (t_unknown_nature.getSpellSaveConversion(self, t_unknown_nature) / 100.0) * self.combat_spellresist / 100.0 * scalar})
         end
 
+        if self:knowTalent(self.T_FORGET) then
+            local t_forget = self:getTalentFromId(self.T_FORGET)
+
+            -- check if we hit threshold
+            local threshold = t_forget.getThreshold(self, t_forget)
+            if power >= threshold then
+                local chance = t_forget.getChance(self, t_forget)
+                if rng.percent(chance) then
+
+                    -- get random effect
+                    local effects = t_forget.getEffects(self, t_forget)
+                    for i = 1, effects do
+                       self:removeEffectsFilter(self, {status="detrimental"})
+                    end
+
+                    game.log(self, "%s has forgotten one of their ailments!", self:getName():capitalize())
+                end
+            end
+        end
+
         -- get effect for visual display
         self:setEffect(self.EFF_RECLUSE_SOLITUDE, 1, { power = power })
     end
@@ -239,4 +259,35 @@ newTalent({
                 spell_save_conversion
         )
     end,
+})
+
+newTalent({
+    name = "Forget",
+    short_name = "FORGET",
+    mode = "passive",
+    type = { "cursed/recluse", 4},
+    points = 5,
+    require = forsaken_wil_req4,
+    cooldown = 0,
+    no_energy = true,
+    tactical = { BUFF = 5},
+    getChance = function(self, t)
+        return self:combatScale(self:getTalentLevel(t) * 3 + self:combatMindpower(), 5, 20, 20, 75)
+    end,
+    getEffects = function(self, t)
+        return math.floor(self:combatTalentScale(self:getTalentLevel(t), 1, 3, 1))
+    end,
+    getThreshold = function(self, t)
+        return math.floor(self:combatTalentScale(self:getTalentLevel(t), 90, 50))
+    end,
+    info = function(self, t)
+        local threshold = t.getThreshold(self, t)
+        local chance = t.getChance(self, t)
+        local effects = t.getEffects(self, t)
+        return([[It is easy for you to forget, as the world forgot you. Your powers warp reality, allowing you to exist in a realm where elements of your form come and go as you choose. Each turn, if your Recluse power is over %d, there is a %d%% chance you will completely forget %d negative status effects on you.]]):tformat(
+                threshold,
+                chance,
+                effects
+        )
+    end
 })

@@ -35,7 +35,8 @@ newBirthDescriptor({
 		[ActorTalents.T_GROWING_APATHY] = 1,
 		[ActorTalents.T_RECLUSE] = 1,
 		[ActorTalents.T_SEQUESTERED] = 1,
-		[ActorTalents.T_UNKNOWN_NATURE] = 1
+		[ActorTalents.T_UNKNOWN_NATURE] = 1,
+		[ActorTalents.T_FORGET] = 1
 	},
 	copy = {
 		max_life = 110,
