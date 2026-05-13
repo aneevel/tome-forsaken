@@ -131,6 +131,7 @@ newEffect({
 							saveReduction = saveReduction,
 							movementSpeedReduction = movementSpeedReduction,
 						})
+						target:crossTierEffect(target.EFF_BRAINLOCKED, eff.src:combatMindpower())
 
 						eff.src:setEffect(target.EFF_BITTER, duration, {
 							mentalSpeed = mind_speed,

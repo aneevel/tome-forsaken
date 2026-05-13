@@ -118,6 +118,7 @@ newTalent({
 			maxDam = damageMax,
 			maxSaveRed = saveReductionMax,
 		})
+		target:crossTierEffect(target.EFF_BRAINLOCKED, self:combatMindpower())
 		return true
 	end,
 })
@@ -214,6 +215,7 @@ newTalent({
 			saveReduction = saveReduction,
 			movementSpeedReduction = movementSpeedReduction,
 		})
+		target:crossTierEffect(target.EFF_BRAINLOCKED, self:combatMindpower())
 
 		DamageType:get(DamageType.MIND).projector(target, x, y, DamageType.MIND, damage)
 		return true
