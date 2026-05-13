@@ -72,6 +72,17 @@ newTalent({
             p.physical_conversion = self:addTemporaryValue("resists", { [DamageType.PHYSICAL] = (t_sequestered.getPhysicalSaveConversion(self, t_sequestered) / 100.0) * self.combat_physresist / 100.0})
         end
 
+        if self:knowTalent(self.T_UNKNOWN_NATURE) then
+            local t_unknown_nature = self:getTalentFromId(self.T_UNKNOWN_NATURE)
+            p.spell_saves = self:addTemporaryValue("combat_spellresist", t_unknown_nature.getSaves(self, t_unknown_nature))
+            p.arcane_conversion = self:addTemporaryValue("resists", { [DamageType.ARCANE] = (t_unknown_nature.getSpellSaveConversion(self, t_unknown_nature) / 100.0) * self.combat_spellresist / 100.0})
+            p.fire_conversion = self:addTemporaryValue("resists", { [DamageType.FIRE] = (t_unknown_nature.getSpellSaveConversion(self, t_unknown_nature) / 100.0) * self.combat_spellresist / 100.0})
+            p.cold_conversion = self:addTemporaryValue("resists", { [DamageType.COLD] = (t_unknown_nature.getSpellSaveConversion(self, t_unknown_nature) / 100.0) * self.combat_spellresist / 100.0})
+            p.lightning_conversion = self:addTemporaryValue("resists", { [DamageType.LIGHTNING] = (t_unknown_nature.getSpellSaveConversion(self, t_unknown_nature) / 100.0) * self.combat_spellresist / 100.0})
+            p.acid_conversion = self:addTemporaryValue("resists", { [DamageType.ACID] = (t_unknown_nature.getSpellSaveConversion(self, t_unknown_nature) / 100.0) * self.combat_spellresist / 100.0})
+            p.blight_conversion = self:addTemporaryValue("resists", { [DamageType.BLIGHT] = (t_unknown_nature.getSpellSaveConversion(self, t_unknown_nature) / 100.0) * self.combat_spellresist / 100.0})
+        end
+
         return p
     end,
     deactivate = function(self, t, p)
@@ -86,6 +97,13 @@ newTalent({
         if p.stun_conversion then self:removeTemporaryValue("stun_immune", p.stun_immune) end
         if p.disease_conversion then self:removeTemporaryValue("disease_immune", p.disease_conversion) end
         if p.physical_conversion then self:removeTemporaryValue("resists", p.physical_conversion) end
+        if p.spell_saves then self:removeTemporaryValue("combat_spellresist", p.spell_saves) end
+        if p.arcane_conversion then self:removeTemporaryValue("resists", p.arcane_conversion) end
+        if p.fire_conversion then self:removeTemporaryValue("resists", p.fire_conversion) end
+        if p.cold_conversion then self:removeTemporaryValue("resists", p.cold_conversion) end
+        if p.lightning_conversion then self:removeTemporaryValue("resists", p.lightning_conversion) end
+        if p.acid_conversion then self:removeTemporaryValue("resists", p.acid_conversion) end
+        if p.blight_conversion then self:removeTemporaryValue("resists", p.blight_conversion) end
 
         self:removeEffect(self.EFF_RECLUSE_SOLITUDE)
         return {}
@@ -105,6 +123,13 @@ newTalent({
         if p.stun_conversion then self:removeTemporaryValue("stun_immune", p.stun_conversion) end
         if p.disease_conversion then self:removeTemporaryValue("disease_immune", p.disease_conversion) end
         if p.physical_conversion then self:removeTemporaryValue("resists", p.physical_conversion) end
+        if p.spell_saves then self:removeTemporaryValue("combat_spellresist", p.spell_saves) end
+        if p.arcane_conversion then self:removeTemporaryValue("resists", p.arcane_conversion) end
+        if p.fire_conversion then self:removeTemporaryValue("resists", p.fire_conversion) end
+        if p.cold_conversion then self:removeTemporaryValue("resists", p.cold_conversion) end
+        if p.lightning_conversion then self:removeTemporaryValue("resists", p.lightning_conversion) end
+        if p.acid_conversion then self:removeTemporaryValue("resists", p.acid_conversion) end
+        if p.blight_conversion then self:removeTemporaryValue("resists", p.blight_conversion) end
 
         -- set radius and weight from talent level
         local radius = t.radius(self, t)
@@ -143,6 +168,17 @@ newTalent({
             p.physical_conversion = self:addTemporaryValue("resists", { [DamageType.PHYSICAL] = (t_sequestered.getPhysicalSaveConversion(self, t_sequestered) / 100.0) * self.combat_physresist / 100.0 * scalar})
         end
 
+        if self:knowTalent(self.T_UNKNOWN_NATURE) then
+            local t_unknown_nature = self:getTalentFromId(self.T_UNKNOWN_NATURE)
+            p.spell_saves = self:addTemporaryValue("combat_spellresist", t_unknown_nature.getSaves(self, t_unknown_nature) * scalar)
+            p.arcane_conversion = self:addTemporaryValue("resists", { [DamageType.ARCANE] = (t_unknown_nature.getSpellSaveConversion(self, t_unknown_nature) / 100.0) * self.combat_spellresist / 100.0 * scalar})
+            p.fire_conversion = self:addTemporaryValue("resists", { [DamageType.FIRE] = (t_unknown_nature.getSpellSaveConversion(self, t_unknown_nature) / 100.0) * self.combat_spellresist / 100.0 * scalar})
+            p.cold_conversion = self:addTemporaryValue("resists", { [DamageType.COLD] = (t_unknown_nature.getSpellSaveConversion(self, t_unknown_nature) / 100.0) * self.combat_spellresist / 100.0 * scalar})
+            p.lightning_conversion = self:addTemporaryValue("resists", { [DamageType.LIGHTNING] = (t_unknown_nature.getSpellSaveConversion(self, t_unknown_nature) / 100.0) * self.combat_spellresist / 100.0 * scalar})
+            p.acid_conversion = self:addTemporaryValue("resists", { [DamageType.ACID] = (t_unknown_nature.getSpellSaveConversion(self, t_unknown_nature) / 100.0) * self.combat_spellresist / 100.0 * scalar})
+            p.blight_conversion = self:addTemporaryValue("resists", { [DamageType.BLIGHT] = (t_unknown_nature.getSpellSaveConversion(self, t_unknown_nature) / 100.0) * self.combat_spellresist / 100.0 * scalar})
+        end
+
         -- get effect for visual display
         self:setEffect(self.EFF_RECLUSE_SOLITUDE, 1, { power = power })
     end
@@ -175,6 +211,32 @@ newTalent({
                 saves,
                 mental_save_conversion,
                 physical_save_conversion
+        )
+    end,
+})
+
+newTalent({
+    name = "Unknown Nature",
+    short_name = "UNKNOWN_NATURE",
+    mode = "passive",
+    type = { "cursed/recluse", 3},
+    points = 5,
+    require = forsaken_wil_req3,
+    cooldown = 0,
+    no_energy = true,
+    tactical = { BUFF = 5},
+    getSaves = function(self, t)
+        return self:combatScale(self:getTalentLevel(t) * 8 + self:combatMindpower(), 6, 35, 30, 175)
+    end,
+    getSpellSaveConversion = function(self, t)
+        return self:combatScale(self:getTalentLevel(t) * 4 + self:combatMindpower(), 45, 16, 70, 125)
+    end,
+    info = function(self, t)
+        local saves = t.getSaves(self, t)
+        local spell_save_conversion = t.getSpellSaveConversion(self, t)
+        return([[Your existence is barely acknowledged within the world, let alone studied in the works of scholars and mages. Arcane forces cannot comprehend your nature, and thus have difficulty affecting you. Your Recluse gains the ability to protect you from magical powers, granting you %d spell save, as well as %d%% of your spell save as Arcane, Fire, Cold, Lightning, Acid, and Blight resistance.]]):tformat(
+                saves,
+                spell_save_conversion
         )
     end,
 })
