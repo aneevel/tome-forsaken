@@ -194,7 +194,7 @@ newTalent({
                        self:removeEffectsFilter(self, {status="detrimental"})
                     end
 
-                    game.log(self, "%s has forgotten one of their ailments!", self:getName():capitalize())
+                    game.log("%s has forgotten one of their ailments!", self:getName():capitalize())
                 end
             end
         end

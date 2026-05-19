@@ -2,7 +2,7 @@ local Map = require("engine.Map")
 
 newEffect({
 	name = "ISOLATED",
-	image = "talents/flame.png",
+	image = "talents/isolate.png",
 	desc = _t("Isolated"),
 	long_desc = function(self, eff)
 		return _t("The target is isolated, taking %d damage and reducing saves by %d every turn for %d turns."):tformat(
@@ -73,7 +73,7 @@ newEffect({
 
 newEffect({
 	name = "FORCED_APATHY",
-	image = "talents/flame.png",
+	image = "talents/forced_apathy.png",
 	desc = _t("Apathetic"),
 	long_desc = function(self, eff)
 		return _t(
@@ -135,7 +135,7 @@ newEffect({
 
 						eff.src:setEffect(target.EFF_BITTER, duration, {
 							mentalSpeed = mind_speed,
-							mindpower = mindpower
+							mindpower = mindpower,
 						})
 
 						DamageType:get(DamageType.MIND).projector(target, px, py, DamageType.MIND, damage)
@@ -178,12 +178,12 @@ newEffect({
 	activate = function(self, eff)
 		self:addTemporaryValue("combat_mindspeed", eff.mentalSpeed)
 		self:addTemporaryValue("combat_mindpower", eff.mindpower)
-	end
+	end,
 })
 
 newEffect({
 	name = "RECLUSE_SOLITUDE",
-	image = "talents/flame.png",
+	image = "talents/recluse.png",
 	desc = _t("Solitude"),
 	type = "mental",
 	subtype = {},
@@ -195,11 +195,11 @@ newEffect({
 		local t = self:getTalentFromId(self.T_RECLUSE)
 		return ([[
 				"Gaining strength in the power of their isolation at strength %d, gaining %d%% All Resist, %d Life Regen, and %d%% Movement Speed"]]):tformat(
-				eff.power,
-				self.resists.all,
-				self.life_regen,
-				self.movement_speed
+			eff.power,
+			self.resists.all,
+			self.life_regen,
+			self.movement_speed
 		)
 	end,
-
 })
+

@@ -217,7 +217,9 @@ newTalent({
 		})
 		target:crossTierEffect(target.EFF_BRAINLOCKED, self:combatMindpower())
 
-		DamageType:get(DamageType.MIND).projector(target, x, y, DamageType.MIND, damage)
+		self:project(target, x, y, function(px, py)
+			DamageType:get(DamageType.MIND).projector(self, px, py, DamageType.MIND, damage)
+		end)
 		return true
 	end,
 })
@@ -262,3 +264,4 @@ newTalent({
 		)
 	end,
 })
+
