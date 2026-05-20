@@ -12,18 +12,19 @@ newBirthDescriptor({
 		"from harm through the sheer denial of force. They seek to isolate their foes,",
 		"instilling the same hopelessness and loneliness they will never escape.",
 		"#GOLD#Stat modifiers:",
-		"#LIGHT_BLUE# * +1 Strength, +0 Dexterity, +0 Constitution",
+		"#LIGHT_BLUE# * +0 Strength, +0 Dexterity, +0 Constitution",
 		"#LIGHT_BLUE# * +0 Magic, +4 Willpower, +4 Cunning",
 		"#GOLD#Life per level:#LIGHT_BLUE# +2",
 	},
 	power_source = { psionic = true, technique = true },
-	stats = { str = 1, wil = 4, cun = 4 },
+	stats = { wil = 4, cun = 4 },
 	talents_types = {
 		["cursed/gloom"] = { true, 0.1 },
 		["cursed/cursed-form"] = { true, 0.3 },
 		["cursed/isolation"] = { true, 0.3 },
 		["cursed/darkness"] = { true, 0.3 },
-		["cursed/recluse"] = { true, 0.3},
+		["cursed/recluse"] = { true, 0.3 },
+		["cursed/bitter-memories"] = { true, 0.3 },
 		["technique/combat-training"] = { true, 0.1 },
 	},
 	talents = {
@@ -36,7 +37,8 @@ newBirthDescriptor({
 		[ActorTalents.T_RECLUSE] = 1,
 		[ActorTalents.T_SEQUESTERED] = 1,
 		[ActorTalents.T_UNKNOWN_NATURE] = 1,
-		[ActorTalents.T_FORGET] = 1
+		[ActorTalents.T_FORGET] = 1,
+		[ActorTalents.T_BITTER_BLADES] = 1,
 	},
 	copy = {
 		max_life = 110,
